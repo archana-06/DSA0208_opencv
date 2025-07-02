@@ -1,0 +1,28 @@
+import cv2
+import numpy as np
+
+def draw_circle_on_white_image(width, height):
+    # Create a white image
+    image = np.ones((height, width, 3), dtype=np.uint8) * 255
+
+    # Define center and radius of the circle
+    center = (width // 2, height // 2)      # Center of the image
+    radius = min(width, height) // 4        # Radius is 1/4th of smaller dimension
+
+    # Define circle color and thickness
+    color = (0, 255, 0)   # Green (BGR)
+    thickness = 2         # Line thickness (use -1 to fill the circle)
+
+    # Draw the circle
+    cv2.circle(image, center, radius, color, thickness)
+
+    # Show the image
+    cv2.imshow("Circle on White Image", image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+# Example usage
+w = int(input("Enter image width: "))
+h = int(input("Enter image height: "))
+draw_circle_on_white_image(w, h)
+
