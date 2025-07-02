@@ -1,0 +1,39 @@
+import cv2
+
+def reverse_video(input_path, output_path):
+    # Open the video file
+    cap = cv2.VideoCapture(input_path)
+    
+    if not cap.isOpened():
+        print("Error: Could not open video.")
+        return
+
+    # Get video properties
+    fps = int(cap.get(cv2.CAP_PROP_FPS))
+    width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fourcc = cv2.VideoWriter_fourcc(*'XVID')
+
+    # Read all frames into a list
+    frames = []
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+        frames.append(frame)
+
+    cap.release()  # Release original video
+
+    # Reverse the frames
+    frames.reverse()
+
+    # Write reversed frames to a new video
+    out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
+    for frame in frames:
+        out.write(frame)
+
+    out.release()
+    print("Reversed video saved to:", output_path)
+
+# Example usage
+reverse_video('input_video.mp4', 'reversed_output.avi')
