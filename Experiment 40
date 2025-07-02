@@ -1,0 +1,40 @@
+import cv2
+import pytesseract
+
+# If you're on Windows, set tesseract path like this:
+# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
+def extract_text_from_video(video_path, frame_interval=30):
+    cap = cv2.VideoCapture(video_path)
+    if not cap.isOpened():
+        print("Error: Cannot open video file.")
+        return
+
+    frame_count = 0
+
+    print("Extracted Text:\n" + "-" * 40)
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        # Process every Nth frame to reduce processing load
+        if frame_count % frame_interval == 0:
+            # Convert frame to grayscale
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+            # Perform OCR on the frame
+            text = pytesseract.image_to_string(gray)
+            if text.strip():
+                print(f"[Frame {frame_count}]")
+                print(text)
+                print("-" * 40)
+
+        frame_count += 1
+
+    cap.release()
+
+# Example usage
+video_file = input("Enter the path to the video file: ")
+extract_text_from_video(video_file, frame_interval=30)  # Process every 30th frame (~1/sec)
+
