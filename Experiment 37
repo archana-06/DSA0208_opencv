@@ -1,0 +1,37 @@
+import cv2
+import numpy as np
+
+def remove_foreground_by_color(image_path, lower_bound, upper_bound):
+    # Read the image
+    image = cv2.imread(image_path)
+    if image is None:
+        print("Error: Could not load image.")
+        return
+
+    # Convert image to HSV color space
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+    # Create mask for the foreground (color within the given bounds)
+    fg_mask = cv2.inRange(hsv, np.array(lower_bound), np.array(upper_bound))
+
+    # Invert the mask to keep background
+    bg_mask = cv2.bitwise_not(fg_mask)
+
+    # Keep only the background
+    background_only = cv2.bitwise_and(image, image, mask=bg_mask)
+
+    # Show images
+    cv2.imshow("Original Image", image)
+    cv2.imshow("Foreground Mask", fg_mask)
+    cv2.imshow("Background Only (Foreground Removed)", background_only)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+# Example usage:
+# To remove red-colored foreground (e.g., red object)
+# Red in HSV: has two ranges (low and high), here's one:
+lower_red = [0, 120, 70]
+upper_red = [10, 255, 255]
+
+img_path = input("Enter image path: ")
+remove_foreground_by_color(img_path, lower_red, upper_red)
